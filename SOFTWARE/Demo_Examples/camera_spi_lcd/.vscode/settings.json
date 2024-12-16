@@ -1,0 +1,26 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.espIdfPath": "/home/peter/esp/v5.4/esp-idf",
+  "idf.pythonBinPath": "/home/peter/.espressif/python_env/idf5.5_py3.12_env/bin/python",
+  "idf.toolsPath": "/home/peter/.espressif",
+  "idf.customExtraPaths": "/home/peter/.espressif/tools/xtensa-esp-elf-gdb/14.2_20240403/xtensa-esp-elf-gdb/bin:/home/peter/.espressif/tools/riscv32-esp-elf-gdb/14.2_20240403/riscv32-esp-elf-gdb/bin:/home/peter/.espressif/tools/xtensa-esp-elf/esp-14.2.0_20240906/xtensa-esp-elf/bin:/home/peter/.espressif/tools/riscv32-esp-elf/esp-14.2.0_20240906/riscv32-esp-elf/bin:/home/peter/.espressif/tools/esp32ulp-elf/2.38_20240113/esp32ulp-elf/bin:/home/peter/.espressif/tools/cmake/3.30.2/bin:/home/peter/.espressif/tools/openocd-esp32/v0.12.0-esp32-20241016/openocd-esp32/bin:/home/peter/.espressif/tools/ninja/1.12.1:/home/peter/.espressif/tools/esp-rom-elfs/20241011",
+  "idf.customExtraVars": {
+    "OPENOCD_SCRIPTS": "/home/peter/.espressif/tools/openocd-esp32/v0.12.0-esp32-20241016/openocd-esp32/share/openocd/scripts",
+    "ESP_ROM_ELF_DIR": "/home/peter/.espressif/tools/esp-rom-elfs/20241011/"
+  },
+  "idf.gitPath": "/usr/bin/git",
+  "idf.port": "/dev/ttyACM0",
+  "idf.adapterTargetName": "esp32p4",
+  "idf.openOcdConfigs": [
+    "board/esp32p4-builtin.cfg"
+  ],
+  "idf.flashType": "UART",
+  "files.associations": {
+    "esp_lcd_panel_ops.h": "c",
+    "esp_lcd_panel_io.h": "c",
+    "spi_master.h": "c",
+    "example_sensor_init.h": "c",
+    "random": "cpp",
+    "esp_check.h": "c"
+  }
+}
