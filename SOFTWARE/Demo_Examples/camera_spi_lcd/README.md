@@ -15,9 +15,11 @@ The subsections below give only absolutely necessary information. For full steps
 
 ### Hardware Required
 
-- OV5647 or SC2336 camera sensor, or other camera sensors
+- Olimex ESP32-P4-DevKit
 - MOD-LCD2.8RTP display
-- ESP32-P4-DevKit
+- OV5647 or SC2336 camera sensor, or other camera sensors
+- Adapter for the UEXT connectors - UEXT-MPQ or UEXT-PQ
+- Cables for the adapter and the boards to connect everything
 
 **Note:** OV5647 has its own ISP functions, whereas SC2336 is a camera sensor without ISP functions. You can use the ESP on-chip ISP functions to tune the image together with the sensor ISP functions, if the image quality is not as expected.
 
