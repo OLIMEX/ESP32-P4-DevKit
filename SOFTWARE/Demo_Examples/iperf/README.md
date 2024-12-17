@@ -11,6 +11,13 @@ This example demonstrates basic usage of [iperf](https://iperf.fr/) protocol to 
 
 The cli environment in the example is based on the [console component](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/system/console.html).
 
+Example was made with ESP-IDF version 5.4.0.
+
+You can have more than one version of ESP-IDF.
+
+ESP-IDF Extension for VS Code Installation
+https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md
+
 ## How to use example
 
 ### Hardware Required
