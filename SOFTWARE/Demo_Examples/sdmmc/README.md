@@ -22,6 +22,13 @@ This example demonstrates how to use an SD card with an ESP device. Example does
 
 This example supports SD (SDSC, SDHC, SDXC) cards and eMMC chips.
 
+Example was made with ESP-IDF version 5.4.0.
+
+You can have more than one version of ESP-IDF.
+
+ESP-IDF Extension for VS Code Installation
+https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md
+
 ## Hardware
 
 This example requires an ESP32 or ESP32-S3 development board with an SD card slot and an SD card.
