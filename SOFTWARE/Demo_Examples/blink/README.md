@@ -9,7 +9,7 @@ This example demonstrates how to blink a LED by using the GPIO driver or using t
 
 ## How to Use Example
 
-Examples were made with ESP-IDF version 5.4.0.
+Example was made with ESP-IDF version 5.4.0.
 
 You can have more than one version of ESP-IDF.
 
