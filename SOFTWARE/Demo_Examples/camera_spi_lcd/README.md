@@ -10,6 +10,13 @@ This example demonstrates how to use the esp_driver_cam component to capture cam
 
 ## Usage
 
+Example was made with ESP-IDF version 5.4.0.
+
+You can have more than one version of ESP-IDF.
+
+ESP-IDF Extension for VS Code Installation
+https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md
+
 The subsections below give only absolutely necessary information. For full steps to configure ESP-IDF and use it to build and run projects, see [ESP-IDF Getting Started](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html#get-started).
 
 
