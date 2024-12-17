@@ -9,6 +9,13 @@ This example demonstrates how to blink a LED by using the GPIO driver or using t
 
 ## How to Use Example
 
+Examples were made with ESP-IDF version 5.4.0.
+
+You can have more than one version of ESP-IDF.
+
+ESP-IDF Extension for VS Code Installation
+https://github.com/espressif/vscode-esp-idf-extension/blob/master/README.md
+
 Before project configuration and build, be sure to set the correct chip target using `idf.py set-target <chip_name>`.
 
 ### Hardware Required
