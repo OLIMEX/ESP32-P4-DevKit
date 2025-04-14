@@ -1,0 +1,17 @@
+Hardware design made with KiCAD. Board revision is printed with white print on the board itself.
+
+Major changes between board revisions of ESP32-P4-DevKit:
+
+Hardware revision C
+---
+
+1. The SD card's power supply was corrected as follows:
+- FET1's source was disconnected from ESP_LDO_VO4 and connected to +3.3V.
+- All RM1 pull-ups and R13 were disconnected from VDD_SD and connected to ESP_LDO_VO4.
+
+2. A lot of improvements for better manfactruing yield in silk and symbols.
+3. The revision identifier and the production year were changed.
+
+Hardware revision B
+---
+Initial release
