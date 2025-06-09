@@ -18,9 +18,13 @@ This example also shows three methods to avoid tearing effect when using `RGB/MI
 
 ### Hardware Required
 
-* An development board with [supported LCD](../../../docs/drivers/lcd.md) (or [supported touch](../../../docs/drivers/touch.md) screen)
+* Olimex [ESP32-P4-DevKit](https://www.olimex.com/Products/IoT/ESP32-P4/ESP32-P4-DevKit/open-source-hardware)
+* Display - Olimex [MIPI-LCD2.8-640x480](https://www.olimex.com/Products/RaspberryPi/MIPI-LCD2.8-640x480/)
+* USB cable
 
 ### Configurations
+
+The demo is already configured, but if you wish you can check the menuconfig settigns the following way:
 
 - Run `idf.py menuconfig`
 - Go to `Example Configurations`:
@@ -39,14 +43,6 @@ Run `idf.py -p <PORT> build flash monitor` to build, flash and monitor the proje
 (To exit the serial monitor, type `Ctrl-]`.)
 
 See the [Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for full steps to configure and use ESP-IDF to build projects.
-
-## Example Output
-
-The following animations show the example running on the ESP32-S3-LCD-EV-Board & ESP32-S3-LCD-EV-Board-2 development boards.
-
-![lvgl_demos_480_480](https://dl.espressif.com/AE/esp-dev-kits/s3-lcd-ev-board_examples_lvgl_demos_480_480_2.gif)
-
-![lvgl_demos_800_480](https://dl.espressif.com/AE/esp-dev-kits/s3-lcd-ev-board_examples_lvgl_demos_800_480.gif)
 
 ## Troubleshooting
 
