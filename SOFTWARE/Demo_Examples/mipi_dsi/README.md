@@ -3,7 +3,7 @@
 
 # MIPI DSI LCD Panel Example
 
-[esp_lcd](https://docs.espressif.com/projects/esp-idf/en/latest/esp32p4/api-reference/peripherals/lcd/dsi_lcd.html) supports MIPI DSI interfaced LCD panel, with frame buffer(s) managed by the driver itself.
+This demo is based on [esp_lcd](https://docs.espressif.com/projects/esp-idf/en/latest/esp32p4/api-reference/peripherals/lcd/dsi_lcd.html) and modified for Olimex ESP32-P4-DevKit. This project supports MIPI DSI interfaced LCD panel, with frame buffer(s) managed by the driver itself.
 
 This example shows the general process of installing a MIPI DSI LCD driver, and displays a LVGL widget on the screen.
 
@@ -11,13 +11,15 @@ This example shows the general process of installing a MIPI DSI LCD driver, and 
 
 ### Hardware Required
 
-* An ESP development board, which with MIPI DSI peripheral supported
-* A general MIPI DSI LCD panel, with 2 data lanes and 1 clock lane, this example support [ILI9881C](https://components.espressif.com/components/espressif/esp_lcd_ili9881c) and [EK79007](https://components.espressif.com/components/espressif/esp_lcd_ek79007)
+* Olimex ESP32-P4-DevKit development board, which with MIPI DSI peripheral supported
+* A general MIPI DSI LCD panel, with 1 data lanes and 1 clock lane, this example support [ST7701S](https://www.olimex.com/Products/RaspberryPi/MIPI-LCD2.8-640x480/).
 * An USB cable for power supply and programming
 
 ### Hardware Connection
 
-The connection between ESP Board and the LCD is as follows:
+The connection between ESP Board and the LCD is simple, just use the flat ribbon cable (included in the display package).
+
+Pinout as follows:
 
 ```text
        ESP Board                         MIPI DSI LCD Panel
@@ -43,9 +45,9 @@ The connection between ESP Board and the LCD is as follows:
 +-----------------------+              +-------------------+
 ```
 
-Before testing your LCD, you also need to read your LCD spec carefully, and then adjust the values like "resolution" and "blank time" in the [main](./main/mipi_dsi_lcd_example_main.c) file.
-
 ### Configure
+
+Typically you don't need to configure anything. We have already enabled the configuration for [MIPI-LCD2.8-640x480](https://www.olimex.com/Products/RaspberryPi/MIPI-LCD2.8-640x480/).
 
 Run `idf.py menuconfig` and go to `Example Configuration`:
 
