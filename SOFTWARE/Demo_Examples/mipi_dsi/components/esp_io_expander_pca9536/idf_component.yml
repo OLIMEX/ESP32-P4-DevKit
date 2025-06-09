@@ -1,0 +1,5 @@
+dependencies:
+  esp_io_expander: ^1.0.1
+  idf: '>=5.4'
+description: ESP IO Expander - PCA9536
+version: 1.0.0

@@ -1,0 +1,7 @@
+dependencies:
+  esp_io_expander_pca9536:
+    path: ../components
+  lvgl/lvgl: 9.2.2
+  esp_lcd_ili9881c: ^1.0.0
+  esp_lcd_ek79007: ^1.0.0
+  esp_lcd_st7701: ^1.1.2

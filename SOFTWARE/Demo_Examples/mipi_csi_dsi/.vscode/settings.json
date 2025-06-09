@@ -1,0 +1,31 @@
+{
+  "idf.espIdfPath": "/home/peter/esp/v5.4/esp-idf",
+  "idf.toolsPath": "/home/peter/.espressif",
+  "idf.pythonInstallPath": "/usr/bin/python3",
+  "idf.flashType": "UART",
+  "idf.port": "/dev/ttyACM0",
+  "idf.openOcdConfigs": [
+    "board/esp32p4-builtin.cfg"
+  ],
+  "idf.customExtraVars": {
+    "IDF_TARGET": "esp32p4"
+  },
+  "files.associations": {
+    "memory": "cpp",
+    "functional": "cpp",
+    "typeinfo": "cpp",
+    "esp_check.h": "c",
+    "i2c_types.h": "c",
+    "ov5645.h": "c",
+    "ioctl.h": "c",
+    "string": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp",
+    "initializer_list": "cpp",
+    "stdexcept": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "format": "cpp",
+    "thread": "cpp"
+  }
+}

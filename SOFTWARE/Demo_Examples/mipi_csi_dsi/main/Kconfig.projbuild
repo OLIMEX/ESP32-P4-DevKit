@@ -1,0 +1,37 @@
+menu "Example Configurations"
+
+    config BOARD_OLIMEX_ESP32_P4_DEVKIT
+        bool "Use BOARD_OLIMEX_ESP32_P4_DEVKIT.h"
+        default y
+    
+    config EXAMPLE_MIPI_I2C_PORT
+        int "MIPI I2C Port Number"
+        default 0
+        range 0 1
+    
+    config EXAMPLE_MIPI_I2C_SDA_PIN
+        int "MIPI CSI SCCB I2C SDA Pin"
+        default 7
+        range -1 56
+    
+    config EXAMPLE_MIPI_I2C_SCL_PIN
+        int "MIPI I2C SCL Pin"
+        default 8
+        range -1 56
+    
+    config EXAMPLE_MIPI_I2C_FREQ
+        int "MIPI I2C Frequency"
+        default 400000
+        range 100000 400000
+
+    config EXAMPLE_MIPI_CSI_CAM_SENSOR_RESET_PIN
+        int "MIPI CSI Camera Sensor Reset Pin"
+        default -1
+        range -1 56
+
+    config EXAMPLE_MIPI_CSI_CAM_SENSOR_PWDN_PIN
+        int "MIPI CSI Camera Sensor Power Down Pin"
+        default -1
+        range -1 56
+    
+endmenu
