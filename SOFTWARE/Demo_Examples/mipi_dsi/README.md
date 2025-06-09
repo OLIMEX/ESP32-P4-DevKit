@@ -7,6 +7,8 @@ This demo is based on [esp_lcd](https://docs.espressif.com/projects/esp-idf/en/l
 
 This example shows the general process of installing a MIPI DSI LCD driver, and displays a LVGL widget on the screen.
 
+This demo was made and tested with ESP-IDF `v5.4.1`.
+
 ## How to use the example
 
 ### Hardware Required
@@ -82,7 +84,3 @@ I (1809) example: Starting LVGL task
 I (1919) example: Display LVGL Meter Widget
 ...
 ```
-
-## Troubleshooting
-
-For any technical queries, please open an [issue](https://github.com/espressif/esp-idf/issues) on GitHub. We will get back to you soon.
