@@ -13,7 +13,7 @@ This example also shows three methods to avoid tearing effect when using `RGB/MI
 
 ### ESP-IDF Required
 
-* The ESP-IDF TAG `v5.1` or later is required to use this example. For using the branch of ESP-IDF, the latest branch `release/v5.3` is recommended. For using the tag of ESP-IDF, the tag `v5.3.2` or later is recommended.
+* This demo was made and tested with ESP-IDF `v5.4.1`.
 * Please follow the [ESP-IDF Programming Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s3/get-started/index.html) to set up the development environment.
 
 ### Hardware Required
@@ -43,7 +43,3 @@ Run `idf.py -p <PORT> build flash monitor` to build, flash and monitor the proje
 (To exit the serial monitor, type `Ctrl-]`.)
 
 See the [Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for full steps to configure and use ESP-IDF to build projects.
-
-## Troubleshooting
-
-Please check the [FAQ](../../../docs/envs/use_with_idf.md#faq) first to see if the same question exists. If not, please create a [Github Issue](https://github.com/esp-arduino-libs/ESP32_Display_Panel/issues). We will get back to you as soon as possible.
