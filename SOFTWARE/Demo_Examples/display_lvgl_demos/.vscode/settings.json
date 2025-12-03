@@ -1,0 +1,15 @@
+{
+  "idf.espIdfPath": "/home/peter/esp/v5.4/esp-idf",
+  "idf.toolsPath": "/home/peter/.espressif",
+  "idf.pythonInstallPath": "/usr/bin/python3",
+  "idf.port": "/dev/ttyACM0",
+  "idf.openOcdConfigs": [
+    "board/esp32p4-builtin.cfg"
+  ],
+  "idf.customExtraVars": {
+    "OPENOCD_SCRIPTS": "/home/peter/.espressif/tools/openocd-esp32/v0.12.0-esp32-20240318/openocd-esp32/share/openocd/scripts",
+    "ESP_ROM_ELF_DIR": "/home/peter/.espressif/tools/esp-rom-elfs/20240305/",
+    "IDF_TARGET": "esp32p4"
+  },
+  "idf.flashType": "UART"
+}
