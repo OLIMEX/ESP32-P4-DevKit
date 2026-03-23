@@ -7,6 +7,10 @@
 
 This example shows LVGL internal demo - LVGL demo player (all LVGL examples are included).
 
+This demo is tested and confirmed working with Olimex ESP32-P4-DevKit and Olimex MIPI-HDMI!
+
+Remembery that you also need a cable FPC-15-1.0-150 between the two boards.
+
 </td><td width="200" valign="top">
   <img src="doc/pic.webp">
 </td></tr>
