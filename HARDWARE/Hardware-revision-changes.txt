@@ -1,6 +1,26 @@
-Hardware design made with KiCAD. Board revision is printed with white print on the board itself.
+Hardware design made with KiCAD. Major board revision (e.g. A, B, C) is printed with white print on the board itself.
+
+Minor revisions (e.g. C1, C2, C3) are revisions that use the same PCB as major board revision but different components. Minor revisions are not printed on the board, but only on the box.
 
 Major changes between board revisions of ESP32-P4-DevKit:
+
+Hardware revision D1
+---
+
+Iprovements to the perpetual reboot issue that some boards experience when erased.
+
+1. U5 changed from TPS62A02ADRLR(SOT-563-6) to TLV62585PDRLR(SOT-563-6);
+2. C63 and C64 changed from 150pF/50V/2%/NP0/C0402 to NA(150pF/50V/2%/NP0/C0402);
+
+Hardware revision D
+---
+
+Improvements to the perpetual reboot issue that some boards experience when erased.
+
+1. R44 and R45, 22R/R0402 added in series to the USB1P1_0P and USB1P1_0N. C63 and C64 (150pF/50V/2%/NP0/C0402) added;
+2. L3 and L4 changed from 1.0uH/2.5A/DCR=30mR/20%/3.00x3.00x1.50mm/CD32(SWPA3015S1R0MT) to 1.0uH/4.2A/DCR=35mR/20%/2.00x1.60x1.00mm/L2016(PIM201610-1R0MTS00);
+3. Q2's value changed from Q25MHz/20pF/20ppm/4P/3.2x2.5mm to Q25MHz/18pF/30ppm/4P/3.2x2.5mm(ABM8-25.000MHZ-D2Y-T); 
+4. C24 and C25 were changed from 33pF/50V/5%/C0G/C0402 to 27pF/50V/5%/C0G/C0402;
 
 Hardware revision C
 ---
