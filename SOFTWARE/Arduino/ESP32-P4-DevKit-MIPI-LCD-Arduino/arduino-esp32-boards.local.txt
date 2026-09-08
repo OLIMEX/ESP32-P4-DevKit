@@ -1,0 +1,13 @@
+# Arduino IDE Serial Monitor override for ESP32P4 Dev Module.
+#
+# Copy this file to the installed ESP32 core directory as boards.local.txt:
+#   <Arduino15>/packages/esp32/hardware/esp32/<core-version>/boards.local.txt
+#
+# Arduino IDE reads this alongside boards.txt. It prevents the Serial Monitor
+# from asserting DTR or RTS when COM port opens or closes, avoiding auto-reset.
+esp32p4.monitor_port.serial.dtr=off
+esp32p4.monitor_port.serial.rts=off
+
+# Legacy names retained for Arduino IDE / monitor compatibility.
+esp32p4.serial.disableDTR=true
+esp32p4.serial.disableRTS=true
