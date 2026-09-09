@@ -471,6 +471,9 @@ IRAM_ATTR bool onLcdVsyncCallback(void *user_data)
 
 #else
 
+static uint8_t *rgb888_flush_buffer = nullptr;
+static size_t rgb888_flush_capacity = 0;
+
 void flush_callback(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *color_map)
 {
     LCD *lcd = (LCD *)drv->user_data;
@@ -479,7 +482,19 @@ void flush_callback(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *color
     const int offsety1 = area->y1;
     const int offsety2 = area->y2;
 
-    lcd->drawBitmap(offsetx1, offsety1, offsetx2 - offsetx1 + 1, offsety2 - offsety1 + 1, (const uint8_t *)color_map);
+    const size_t pixels = (offsetx2 - offsetx1 + 1) * (offsety2 - offsety1 + 1);
+    const uint8_t *data = (const uint8_t *)color_map;
+    if (lcd->getFrameColorBits() == 24) {
+        assert(rgb888_flush_buffer && pixels <= rgb888_flush_capacity);
+        for (size_t i = 0; i < pixels; ++i) {
+            const lv_color32_t color = {.full = lv_color_to32(color_map[i])};
+            rgb888_flush_buffer[3 * i] = color.ch.blue;
+            rgb888_flush_buffer[3 * i + 1] = color.ch.green;
+            rgb888_flush_buffer[3 * i + 2] = color.ch.red;
+        }
+        data = rgb888_flush_buffer;
+    }
+    lcd->drawBitmap(offsetx1, offsety1, offsetx2 - offsetx1 + 1, offsety2 - offsety1 + 1, data);
     // For RGB LCD, directly notify LVGL that the buffer is ready
     if (lcd->getBus()->getBasicAttributes().type == ESP_PANEL_BUS_TYPE_RGB) {
         lv_disp_flush_ready(drv);
@@ -568,6 +583,12 @@ static lv_disp_t *display_init(LCD *lcd)
 #if !LVGL_PORT_AVOID_TEAR
     // Avoid tearing function is disabled
     buffer_size = lcd_width * LVGL_PORT_BUFFER_SIZE_HEIGHT;
+    if (lcd->getFrameColorBits() == 24) {
+        rgb888_flush_capacity = buffer_size;
+        rgb888_flush_buffer = (uint8_t *)heap_caps_aligned_alloc(
+            64, (buffer_size * 3 + 63) & ~63, MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA);
+        ESP_UTILS_CHECK_NULL_RETURN(rgb888_flush_buffer, nullptr, "RGB888 staging allocation failed");
+    }
     for (int i = 0; (i < LVGL_PORT_BUFFER_NUM) && (i < LVGL_PORT_BUFFER_NUM_MAX); i++) {
         lvgl_buf[i] = heap_caps_malloc(buffer_size * sizeof(lv_color_t), LVGL_PORT_BUFFER_MALLOC_CAPS);
         assert(lvgl_buf[i]);

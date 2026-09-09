@@ -49,7 +49,9 @@ Pinout as follows:
 
 ### Configure
 
-Typically you don't need to configure anything. We have already enabled the configuration for [MIPI-LCD2.8-640x480](https://www.olimex.com/Products/RaspberryPi/MIPI-LCD2.8-640x480/).
+The project defaults to the current **WLK2802MIPI-15P-V2** LCD: RGB888 display data, one DSI lane at 500 Mbps, a 16 MHz DPI clock, and no PCA9536 I2C expander.
+
+To build for the original **WLK2802MIPI-15P** LCD, change `OLIMEX_MIPI_LCD_VERSION` near the top of `main/mipi_dsi_lcd_example_main.c` from `2` to `1`. V1 enables the PCA9536 at I2C address `0x41` for reset/backlight and uses RGB565 display data, 1000 Mbps, and a 25 MHz DPI clock. The supplied `sdkconfig.defaults` is V2/24-bit. For a clean V1 configuration run `idf.py -D SDKCONFIG_DEFAULTS="sdkconfig.defaults;sdkconfig.defaults.v1" reconfigure`, then build and flash.
 
 Run `idf.py menuconfig` and go to `Example Configuration`:
 
@@ -61,6 +63,8 @@ Run `idf.py menuconfig` and go to `Example Configuration`:
 ### Build and Flash
 
 Run `idf.py -p PORT build flash monitor` to build, flash and monitor the project. A LVGL widget should show up on the LCD as expected.
+
+`build/` and `managed_components/` are generated locally. They are intentionally ignored by Git and are not part of the upload.
 
 The first time you run `idf.py` for the example will cost extra time as the build system needs to address the component dependencies and downloads the missing components from the ESP Component Registry into `managed_components` folder.
 

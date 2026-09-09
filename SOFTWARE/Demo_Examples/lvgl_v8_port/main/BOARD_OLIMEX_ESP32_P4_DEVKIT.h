@@ -17,6 +17,19 @@
 
 // *INDENT-OFF*
 
+/*
+ * MIPI-LCD2.8 hardware revision:
+ *   2: WLK2802MIPI-15P-V2 (default), RGB888 and no PCA9536 expander.
+ *   1: original WLK2802MIPI-15P, RGB565 and PCA9536 reset/backlight control.
+ */
+#ifndef OLIMEX_MIPI_LCD_VERSION
+#define OLIMEX_MIPI_LCD_VERSION             (2)
+#endif
+
+#if (OLIMEX_MIPI_LCD_VERSION != 1) && (OLIMEX_MIPI_LCD_VERSION != 2)
+#error "OLIMEX_MIPI_LCD_VERSION must be 1 or 2"
+#endif
+
 /**
  * @brief Flag to enable custom board configuration (0/1)
  *
@@ -229,15 +242,21 @@
      */
     /* For host */
     #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_NUM           (1)     // ESP32-P4 supports 1 or 2 lanes
-    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_RATE_MBPS     (1000)  // Single lane bit rate, should check the LCD drive IC
+    #if OLIMEX_MIPI_LCD_VERSION == 2
+    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_RATE_MBPS     (500)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_CLK_MHZ            (16)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_PIXEL_BITS         (ESP_PANEL_LCD_COLOR_BITS_RGB888)
+    #else
+    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_RATE_MBPS     (1000)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_CLK_MHZ            (25)
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_PIXEL_BITS         (ESP_PANEL_LCD_COLOR_BITS_RGB565)
+    #endif
+                                                                    // Single lane bit rate; ESP32-P4 supports max 1500 Mbps.
                                                                     // datasheet for the supported lane rate. Different
                                                                     // color format (RGB565/RGB888) may have different
                                                                     // lane bit rate requirements.
                                                                     // ESP32-P4 supports max 1500Mbps
     /* For refresh panel (DPI) */
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_CLK_MHZ            (25)
-    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_PIXEL_BITS         (ESP_PANEL_LCD_COLOR_BITS_RGB565)
-                                                                    // ESP_PANEL_LCD_COLOR_BITS_RGB565/RGB666/RGB888
     #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HPW                (4)
     #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HBP                (20)
     #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HFP                (10)
@@ -332,7 +351,11 @@
 /**
  * @brief LCD color configuration
  */
+#if OLIMEX_MIPI_LCD_VERSION == 2
+#define ESP_PANEL_BOARD_LCD_COLOR_BITS          (ESP_PANEL_LCD_COLOR_BITS_RGB888)
+#else
 #define ESP_PANEL_BOARD_LCD_COLOR_BITS          (ESP_PANEL_LCD_COLOR_BITS_RGB565)
+#endif
                                                         // ESP_PANEL_LCD_COLOR_BITS_RGB565/RGB666/RGB888
 #define ESP_PANEL_BOARD_LCD_COLOR_BGR_ORDER     (0)     // 0: RGB, 1: BGR
 #define ESP_PANEL_BOARD_LCD_COLOR_INEVRT_BIT    (0)     // 0/1
@@ -477,7 +500,7 @@
  *
  * Set to `1` to enable backlight support, `0` to disable
  */
-#define ESP_PANEL_BOARD_USE_BACKLIGHT           (1)
+#define ESP_PANEL_BOARD_USE_BACKLIGHT           (0)
 
 #if ESP_PANEL_BOARD_USE_BACKLIGHT
 /**
@@ -552,7 +575,7 @@
  *
  * Set to `1` to enable IO expander support, `0` to disable
  */
-#define ESP_PANEL_BOARD_USE_EXPANDER            (1)
+#define ESP_PANEL_BOARD_USE_EXPANDER            (0)
 
 #if ESP_PANEL_BOARD_USE_EXPANDER
 /**
@@ -688,21 +711,7 @@
  * @return true on success, false on failure
  */
 
-#define ESP_PANEL_BOARD_LCD_PRE_BEGIN_FUNCTION(p) \
-    {  \
-        auto board = static_cast<Board *>(p);  \
-        auto expander = board->getIO_Expander()->getBase(); \
-        expander->pinMode(3, OUTPUT); \
-        expander->digitalWrite(3, HIGH); \
-        vTaskDelay(pdMS_TO_TICKS(10)); \
-        expander->digitalWrite(3, LOW); \
-        vTaskDelay(pdMS_TO_TICKS(10)); \
-        expander->digitalWrite(3, HIGH); \
-        expander->pinMode(3, INPUT); \
-        vTaskDelay(pdMS_TO_TICKS(120)); \
-        printf("ESP_PANEL_BOARD_LCD_PRE_BEGIN_FUNCTION\n"); \
-        return true;    \
-    }
+/* V1 PCA9536 reset/backlight is performed in main.cpp before Board::begin(). */
 
 
 /**

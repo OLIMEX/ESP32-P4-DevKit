@@ -24,7 +24,11 @@ This example also shows three methods to avoid tearing effect when using `RGB/MI
 
 ### Configurations
 
-The demo is already configured, but if you wish you can check the menuconfig settigns the following way:
+The demo defaults to the current **WLK2802MIPI-15P-V2** LCD. It sends RGB888 over one DSI lane at 500 Mbps with a 16 MHz DPI clock; it does not use a PCA9536 expander. LVGL remains RGB565 internally and converts each flushed region to RGB888 before it reaches the LCD frame buffer.
+
+For the original **WLK2802MIPI-15P** LCD, set `OLIMEX_MIPI_LCD_VERSION` to `1` near the top of `main/BOARD_OLIMEX_ESP32_P4_DEVKIT.h`. V1 uses RGB565, a 1000 Mbps DSI lane, a 25 MHz DPI clock, and a direct PCA9536 reset/backlight sequence at I2C address `0x41` (SDA GPIO7, SCL GPIO8). The project remains self-contained.
+
+The demo is already configured, but if you wish you can check the menuconfig settings the following way:
 
 - Run `idf.py menuconfig`
 - Go to `Example Configurations`:
@@ -39,6 +43,8 @@ The demo is already configured, but if you wish you can check the menuconfig set
 ### Build and Flash
 
 Run `idf.py -p <PORT> build flash monitor` to build, flash and monitor the project.
+
+`build/` and `managed_components/` are generated locally. They are intentionally ignored by Git and are not part of the upload.
 
 (To exit the serial monitor, type `Ctrl-]`.)
 

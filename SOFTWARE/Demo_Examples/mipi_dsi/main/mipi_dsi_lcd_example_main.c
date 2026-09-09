@@ -5,6 +5,8 @@
  */
 
 #include <stdio.h>
+#include <stdbool.h>
+#include <stdint.h>
 #include <unistd.h>
 #include <sys/lock.h>
 #include <sys/param.h>
@@ -28,6 +30,26 @@
 #include "esp_io_expander_pca9536.h"
 
 static const char *TAG = "example";
+
+// Diagnostic mode: use the ESP32-P4 DSI host pattern generator instead of LVGL.
+// Set OLIMEX_DSI_PATTERN_DIAG to 0 to restore the original Olimex LVGL demo.
+#ifndef OLIMEX_DSI_PATTERN_DIAG
+#define OLIMEX_DSI_PATTERN_DIAG 0
+#endif
+
+/*
+ * MIPI-LCD2.8 hardware revision:
+ *   2: WLK2802MIPI-15P-V2 (default). RGB888 DSI data; no PCA9536.
+ *   1: original WLK2802MIPI-15P. RGB565 DSI data; PCA9536 at I2C 0x41
+ *      supplies the LCD reset and backlight controls.
+ */
+#ifndef OLIMEX_MIPI_LCD_VERSION
+#define OLIMEX_MIPI_LCD_VERSION 2
+#endif
+
+#if (OLIMEX_MIPI_LCD_VERSION != 1) && (OLIMEX_MIPI_LCD_VERSION != 2)
+#error "OLIMEX_MIPI_LCD_VERSION must be 1 or 2"
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// Please update the following configuration according to your LCD Spec //////////////////////////////
@@ -57,7 +79,11 @@ static const char *TAG = "example";
 #define EXAMPLE_MIPI_DSI_LCD_VFP      10
 #elif CONFIG_EXAMPLE_LCD_USE_ST7701
 // Refresh Rate = 25000000/(10+4+20+480)/(8+4+14+640) = 73Hz
+#if OLIMEX_MIPI_LCD_VERSION == 2
+#define EXAMPLE_MIPI_DSI_DPI_CLK_MHZ  16
+#else
 #define EXAMPLE_MIPI_DSI_DPI_CLK_MHZ  25
+#endif
 #define EXAMPLE_MIPI_DSI_LCD_H_RES    480
 #define EXAMPLE_MIPI_DSI_LCD_V_RES    640
 #define EXAMPLE_MIPI_DSI_LCD_HSYNC    4
@@ -74,7 +100,11 @@ static const char *TAG = "example";
 #define EXAMPLE_MIPI_DSI_LANE_NUM          2    // 2 data lanes
 #endif
 
+#if OLIMEX_MIPI_LCD_VERSION == 2
+#define EXAMPLE_MIPI_DSI_LANE_BITRATE_MBPS 500
+#else
 #define EXAMPLE_MIPI_DSI_LANE_BITRATE_MBPS 1000 // 1Gbps
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// Please update the following configuration according to your Board Design //////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -272,13 +302,31 @@ static const st7701_lcd_init_cmd_t lcd_init_cmds[] = {
 };
 
 esp_io_expander_handle_t io_expander = NULL;
+static i2c_master_bus_handle_t io_expander_i2c_handle = NULL;
 
 #define PCA9536_BACKLIGHT  IO_EXPANDER_PIN_NUM_1
 #define PCA9536_USER_LED   IO_EXPANDER_PIN_NUM_2
 #define PCA9536_RESET      IO_EXPANDER_PIN_NUM_3
 
+static void example_scan_i2c_bus(i2c_master_bus_handle_t i2c_handle)
+{
+    bool found = false;
+
+    ESP_LOGI(TAG, "Scanning LCD control I2C bus on SDA=7 SCL=8");
+    for (uint8_t addr = 0x08; addr < 0x78; addr++) {
+        esp_err_t ret = i2c_master_probe(i2c_handle, addr, 50);
+        if (ret == ESP_OK) {
+            ESP_LOGI(TAG, "I2C device ACK at 0x%02x", addr);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        ESP_LOGW(TAG, "No I2C devices ACKed on the LCD control bus");
+    }
+}
+
 void example_init_pca9536() {
-    i2c_master_bus_handle_t i2c_handle = NULL;
     const i2c_master_bus_config_t bus_config = {
         .i2c_port = I2C_NUM_0,
         .sda_io_num = GPIO_NUM_7,
@@ -286,18 +334,28 @@ void example_init_pca9536() {
         .clk_source = I2C_CLK_SRC_DEFAULT,
         .flags.enable_internal_pullup = true,
     };
-    ESP_RETURN_VOID_ON_ERROR(
-        i2c_new_master_bus(&bus_config, &i2c_handle), 
-        TAG, "PCA9536: i2c bus init failed"
-    );
-    ESP_RETURN_VOID_ON_ERROR(
-        esp_io_expander_new_i2c_pca9536(i2c_handle, ESP_IO_EXPANDER_I2C_PCA9536_ADDRESS, &io_expander), 
-        TAG, "PCA9536: init failed"
-    );
+    esp_err_t ret = i2c_new_master_bus(&bus_config, &io_expander_i2c_handle);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "PCA9536: i2c bus init failed: %s", esp_err_to_name(ret));
+        return;
+    }
+
+    ret = esp_io_expander_new_i2c_pca9536(io_expander_i2c_handle, ESP_IO_EXPANDER_I2C_PCA9536_ADDRESS, &io_expander);
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "PCA9536: no device at 0x%02x (%s); continuing without expander reset/backlight control",
+                 ESP_IO_EXPANDER_I2C_PCA9536_ADDRESS, esp_err_to_name(ret));
+        example_scan_i2c_bus(io_expander_i2c_handle);
+        return;
+    }
     ESP_LOGI(TAG, "PCA9536: Init");
 }
 
 void example_reset_pca9536() {
+    if (io_expander == NULL) {
+        ESP_LOGW(TAG, "PCA9536: no valid handle; skipping LCD reset/backlight control");
+        return;
+    }
+
     // Set mode
     ESP_RETURN_VOID_ON_ERROR(
         esp_io_expander_set_dir(io_expander, PCA9536_BACKLIGHT | PCA9536_USER_LED, IO_EXPANDER_OUTPUT), 
@@ -375,9 +433,15 @@ void app_main(void)
         .virtual_channel = 0,
         .dpi_clk_src = MIPI_DSI_DPI_CLK_SRC_DEFAULT,
         .dpi_clock_freq_mhz = EXAMPLE_MIPI_DSI_DPI_CLK_MHZ,
+#if OLIMEX_MIPI_LCD_VERSION == 2
         .pixel_format = LCD_COLOR_PIXEL_FORMAT_RGB888,
         .in_color_format = LCD_COLOR_FMT_RGB888,
         .out_color_format = LCD_COLOR_FMT_RGB888,
+#else
+        .pixel_format = LCD_COLOR_PIXEL_FORMAT_RGB565,
+        .in_color_format = LCD_COLOR_FMT_RGB565,
+        .out_color_format = LCD_COLOR_FMT_RGB565,
+#endif
         .video_timing = {
             .h_size = EXAMPLE_MIPI_DSI_LCD_H_RES,
             .v_size = EXAMPLE_MIPI_DSI_LCD_V_RES,
@@ -404,7 +468,7 @@ void app_main(void)
     esp_lcd_panel_dev_config_t lcd_dev_config = {
         .reset_gpio_num = EXAMPLE_PIN_NUM_LCD_RST,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
-        .bits_per_pixel = 24,
+        .bits_per_pixel = (OLIMEX_MIPI_LCD_VERSION == 2) ? 24 : 16,
         .vendor_config = &vendor_config,
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_ili9881c(mipi_dbi_io, &lcd_dev_config, &mipi_dpi_panel));
@@ -418,7 +482,7 @@ void app_main(void)
     esp_lcd_panel_dev_config_t lcd_dev_config = {
         .reset_gpio_num = EXAMPLE_PIN_NUM_LCD_RST,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
-        .bits_per_pixel = 24,
+        .bits_per_pixel = (OLIMEX_MIPI_LCD_VERSION == 2) ? 24 : 16,
         .vendor_config = &vendor_config,
     };
     ESP_ERROR_CHECK(esp_lcd_new_panel_ek79007(mipi_dbi_io, &lcd_dev_config, &mipi_dpi_panel));
@@ -438,12 +502,16 @@ void app_main(void)
     esp_lcd_panel_dev_config_t lcd_dev_config = {
         .reset_gpio_num = EXAMPLE_PIN_NUM_LCD_RST,
         .rgb_ele_order = LCD_RGB_ELEMENT_ORDER_RGB,
-        .bits_per_pixel = 24,
+        .bits_per_pixel = (OLIMEX_MIPI_LCD_VERSION == 2) ? 24 : 16,
         .vendor_config = &vendor_config,
     };
 
+#if OLIMEX_MIPI_LCD_VERSION == 1
     example_init_pca9536();
     example_reset_pca9536();
+#else
+    ESP_LOGI(TAG, "V2 LCD: no PCA9536 reset/backlight control");
+#endif
 
     ESP_ERROR_CHECK(esp_lcd_new_panel_st7701(mipi_dbi_io, &lcd_dev_config, &mipi_dpi_panel));
 #endif
@@ -459,6 +527,27 @@ void app_main(void)
     // turn on backlight
     example_bsp_set_lcd_backlight(EXAMPLE_LCD_BK_LIGHT_ON_LEVEL);
 
+#if OLIMEX_DSI_PATTERN_DIAG
+    ESP_LOGI(TAG, "DSI diagnostic pattern mode");
+    ESP_LOGI(TAG, "LCD %dx%d, lanes=%d, lane bitrate=%d Mbps, DPI clock=%d MHz",
+             EXAMPLE_MIPI_DSI_LCD_H_RES, EXAMPLE_MIPI_DSI_LCD_V_RES,
+             EXAMPLE_MIPI_DSI_LANE_NUM, EXAMPLE_MIPI_DSI_LANE_BITRATE_MBPS,
+             EXAMPLE_MIPI_DSI_DPI_CLK_MHZ);
+
+    const mipi_dsi_pattern_type_t patterns[] = {
+        MIPI_DSI_PATTERN_BAR_VERTICAL,
+        MIPI_DSI_PATTERN_BAR_HORIZONTAL,
+        MIPI_DSI_PATTERN_BER_VERTICAL,
+    };
+    size_t pattern_index = 0;
+    while (true) {
+        ESP_ERROR_CHECK(esp_lcd_dpi_panel_set_pattern(mipi_dpi_panel, patterns[pattern_index]));
+        ESP_LOGI(TAG, "DSI pattern index %u", (unsigned)pattern_index);
+        pattern_index = (pattern_index + 1) % (sizeof(patterns) / sizeof(patterns[0]));
+        vTaskDelay(pdMS_TO_TICKS(3000));
+    }
+#endif
+
     ESP_LOGI(TAG, "Initialize LVGL library");
     lv_init();
     // create a lvgl display
@@ -466,7 +555,11 @@ void app_main(void)
     // associate the mipi panel handle to the display
     lv_display_set_user_data(display, mipi_dpi_panel);
     // set color depth
+#if OLIMEX_MIPI_LCD_VERSION == 2
     lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB888);
+#else
+    lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
+#endif
     // create draw buffer
     void *buf1 = NULL;
     void *buf2 = NULL;

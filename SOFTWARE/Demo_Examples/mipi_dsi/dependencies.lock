@@ -2,7 +2,7 @@ dependencies:
   esp_io_expander_pca9536:
     dependencies: []
     source:
-      path: /home/peter/Projects/ESP32-P4-DevKit/WEB_files/Demo_Example_WEB_files/mipi_dsi/components/esp_io_expander_pca9536
+      path: D:\Codex\ESP32-P4-DevKit\SOFTWARE\Demo_Examples\mipi_dsi\components\esp_io_expander_pca9536
       type: local
     version: 1.0.0
   espressif/cmake_utilities:
@@ -16,7 +16,7 @@ dependencies:
       type: service
     version: 0.5.3
   espressif/esp_io_expander:
-    component_hash: fbc0de4082fc7c207dc98a93a0ed83d1a929a4ecee83cc567afb406f3ee6d4a6
+    component_hash: 7b7f91270172e46ca4597e3874f48d8412e280e8c295559f5922ec38656e3e5f
     dependencies:
     - name: idf
       require: private
@@ -24,9 +24,9 @@ dependencies:
     source:
       registry_url: https://components.espressif.com/
       type: service
-    version: 1.0.1
+    version: 1.2.1
   espressif/esp_lcd_ek79007:
-    component_hash: 07c1afab7e9fd4dd2fd06ff9245e65327c5bbd5485efec199496e19a9304d47b
+    component_hash: 8005700b7f10c7136b6e2a3f19a48f972aa1d13ed107ed298574e8d24d17ea83
     dependencies:
     - name: espressif/cmake_utilities
       registry_url: https://components.espressif.com
@@ -40,9 +40,9 @@ dependencies:
       type: service
     targets:
     - esp32p4
-    version: 1.0.2
+    version: 1.0.4
   espressif/esp_lcd_ili9881c:
-    component_hash: f4f374226b62baf13f735864e8fae58e17c537df34d598e059f6caad4761ef65
+    component_hash: 0288df12755c95d406ccea245a427595f314df0b14a61846286d926ea6f3698e
     dependencies:
     - name: idf
       require: private
@@ -52,9 +52,9 @@ dependencies:
       type: service
     targets:
     - esp32p4
-    version: 1.0.1
+    version: 1.1.0
   espressif/esp_lcd_st7701:
-    component_hash: d9462b09a1bae0201dc2f4010b70e5af13c24816434202d44adc87de4493ca4a
+    component_hash: 0b11e8733e51e12da83003b9d475777eaf47bfbdce01379879bd2504d14f4f83
     dependencies:
     - name: espressif/cmake_utilities
       registry_url: https://components.espressif.com
@@ -69,11 +69,11 @@ dependencies:
     targets:
     - esp32s3
     - esp32p4
-    version: 1.1.2
+    version: 1.1.5
   idf:
     source:
       type: idf
-    version: 5.4.1
+    version: 5.5.0
   lvgl/lvgl:
     component_hash: 096c69af22eaf8a2b721e3913da91918c5e6bf1a762a113ec01f401aa61337a0
     dependencies: []
