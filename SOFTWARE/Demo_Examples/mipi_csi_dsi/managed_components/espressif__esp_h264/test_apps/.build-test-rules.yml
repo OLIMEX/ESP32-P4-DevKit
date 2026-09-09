@@ -1,0 +1,9 @@
+esp_h264/test_apps:
+  enable:
+    - if: IDF_TARGET == "esp32p4"
+  disable_test:
+    - if: IDF_TARGET == "esp32p4"
+      temporary: true
+      reason: lack of runner
+  depends_components:
+    - esp_h264

@@ -50,6 +50,19 @@
 #define ESP_PANEL_BOARD_USE_LCD             (1)
 
 #if ESP_PANEL_BOARD_USE_LCD
+
+/*
+ * MIPI-LCD2.8 revision selector.
+ * 2: WLK2802MIPI-15P-V2 (default): RGB888, no PCA9536 control.
+ * 1: WLK2802MIPI-15P: PCA9536 reset/backlight control, RGB888 camera path.
+ */
+#ifndef OLIMEX_MIPI_LCD_VERSION
+#define OLIMEX_MIPI_LCD_VERSION              (2)
+#endif
+
+#if (OLIMEX_MIPI_LCD_VERSION != 1) && (OLIMEX_MIPI_LCD_VERSION != 2)
+#error "OLIMEX_MIPI_LCD_VERSION must be 1 or 2"
+#endif
 /**
  * @brief LCD controller selection
  *
@@ -229,13 +242,21 @@
      */
     /* For host */
     #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_NUM           (1)     // ESP32-P4 supports 1 or 2 lanes
-    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_RATE_MBPS     (1000)  // Single lane bit rate, should check the LCD drive IC
+#if OLIMEX_MIPI_LCD_VERSION == 1
+    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_RATE_MBPS     (1000)
+#else
+    #define ESP_PANEL_BOARD_LCD_MIPI_DSI_LANE_RATE_MBPS     (500)
+#endif
                                                                     // datasheet for the supported lane rate. Different
                                                                     // color format (RGB565/RGB888) may have different
                                                                     // lane bit rate requirements.
                                                                     // ESP32-P4 supports max 1500Mbps
     /* For refresh panel (DPI) */
+ #if OLIMEX_MIPI_LCD_VERSION == 1
     #define ESP_PANEL_BOARD_LCD_MIPI_DPI_CLK_MHZ            (25)
+ #else
+    #define ESP_PANEL_BOARD_LCD_MIPI_DPI_CLK_MHZ            (16)
+ #endif
     #define ESP_PANEL_BOARD_LCD_MIPI_DPI_PIXEL_BITS         (ESP_PANEL_LCD_COLOR_BITS_RGB888)
                                                                     // ESP_PANEL_LCD_COLOR_BITS_RGB565/RGB666/RGB888
     #define ESP_PANEL_BOARD_LCD_MIPI_DPI_HPW                (4)
@@ -477,7 +498,7 @@
  *
  * Set to `1` to enable backlight support, `0` to disable
  */
-#define ESP_PANEL_BOARD_USE_BACKLIGHT           (1)
+#define ESP_PANEL_BOARD_USE_BACKLIGHT           (0)
 
 #if ESP_PANEL_BOARD_USE_BACKLIGHT
 /**
@@ -552,7 +573,7 @@
  *
  * Set to `1` to enable IO expander support, `0` to disable
  */
-#define ESP_PANEL_BOARD_USE_EXPANDER            (1)
+#define ESP_PANEL_BOARD_USE_EXPANDER            (0)
 
 #if ESP_PANEL_BOARD_USE_EXPANDER
 /**

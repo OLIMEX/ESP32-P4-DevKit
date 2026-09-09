@@ -5,7 +5,8 @@
 
 ## Overview
 
-This example demonstrates how to stream camera input to the display. It requires camera, display, and ESP32-P4 board.
+This example streams camera input to the display. It requires a camera, display,
+and ESP32-P4 board. It supports both MIPI-LCD2.8 revisions.
 
 ## How to use
 
@@ -25,7 +26,26 @@ Connect the camera to MIPI-CSI connector and connect the display to MIPI-DSI con
 
 ### Configurations
 
-The demo is already configured, but if you wish you can check the menuconfig settigns the following way:
+V2 (`WLK2802MIPI-15P-V2`) is the default. It uses RGB888 with one MIPI DSI
+lane at 500 Mbps and a 16 MHz DPI clock; it has no PCA9536 control expander.
+
+For the original V1 (`WLK2802MIPI-15P`), edit
+`main/BOARD_OLIMEX_ESP32_P4_DEVKIT.h` and change:
+
+```c
+#define OLIMEX_MIPI_LCD_VERSION (2)
+```
+
+to:
+
+```c
+#define OLIMEX_MIPI_LCD_VERSION (1)
+```
+
+V1 uses the PCA9536 at I2C address `0x41` on GPIO7/GPIO8 for the required
+panel reset and backlight sequence. The camera-to-display path remains RGB888.
+
+The demo is otherwise already configured. To review its project settings:
 
 - Run `idf.py menuconfig`
 
@@ -38,3 +58,6 @@ Run `idf.py -p <PORT> build flash monitor` to build, flash and monitor the proje
 (To exit the serial monitor, type `Ctrl-]`.)
 
 See the [Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/get-started/index.html) for full steps to configure and use ESP-IDF to build projects.
+
+Generated `build/`, `managed_components/`, and `sdkconfig.old` files are local
+build output and should not be committed.

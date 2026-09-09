@@ -1,0 +1,10 @@
+dependencies:
+  idf: '>=5.3'
+description: SCCB interface driver for camera
+license: Apache-2.0
+repository: git://github.com/espressif/esp-video-components.git
+repository_info:
+  commit_sha: 3cafa0902542d372da440d9a0aa270b2cf695caf
+  path: esp_sccb_intf
+url: https://github.com/espressif/esp-video-components/tree/master/esp_sccb_intf
+version: 0.0.5

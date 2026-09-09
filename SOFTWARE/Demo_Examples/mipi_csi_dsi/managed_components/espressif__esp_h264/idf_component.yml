@@ -1,0 +1,10 @@
+dependencies:
+  idf: '>=4.4'
+description: Espressif H264 encoder and decoder
+issues: https://github.com/espressif/esp-h264-component/issues
+repository: git://github.com/espressif/esp-h264-component.git
+repository_info:
+  commit_sha: c182111b79b7ec7310ed3b82f80b51087b97f736
+  path: esp_h264
+url: https://github.com/espressif/esp-h264-component
+version: 1.0.4
