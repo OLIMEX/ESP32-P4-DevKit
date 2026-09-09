@@ -26,6 +26,10 @@
  * Select the display in esp_panel_board_custom_conf.h:
  *   OLIMEX_MIPI_LCD_VERSION 2: WLK2802MIPI-15P-V2 (default; no PCA9536)
  *   OLIMEX_MIPI_LCD_VERSION 1: WLK2802MIPI-15P (PCA9536 reset/backlight)
+ *
+ * The user LED on GPIO2 is a 1 Hz heartbeat on both the ESP32-P4-DevKit and
+ * ESP32-P4-PC. Set OLIMEX_USER_LED_ACTIVE_LEVEL to LOW if a board revision
+ * has an active-low LED.
  */
 
 #include <assert.h>
@@ -52,6 +56,14 @@ using namespace esp_panel::drivers;
 
 #ifndef OLIMEX_DEBUG_SERIAL
 #define OLIMEX_DEBUG_SERIAL 1
+#endif
+
+#ifndef OLIMEX_USER_LED_PIN
+#define OLIMEX_USER_LED_PIN 2
+#endif
+
+#ifndef OLIMEX_USER_LED_ACTIVE_LEVEL
+#define OLIMEX_USER_LED_ACTIVE_LEVEL HIGH
 #endif
 
 #if OLIMEX_LCD_TEST_MODE < 1 || OLIMEX_LCD_TEST_MODE > 3
@@ -208,6 +220,8 @@ static void create_test_ui()
 void setup()
 {
     debug_begin();
+    pinMode(OLIMEX_USER_LED_PIN, OUTPUT);
+    digitalWrite(OLIMEX_USER_LED_PIN, !OLIMEX_USER_LED_ACTIVE_LEVEL);
     delay(500);
     debug_printf("\n");
     debug_printf("Olimex ESP32-P4-DevKit MIPI-LCD2.8 Arduino LCD test\n");
@@ -293,6 +307,15 @@ void setup()
 void loop()
 {
     static uint32_t pattern_index = 0;
+    static uint32_t last_led_toggle_ms = 0;
+    static bool user_led_on = false;
+
+    if ((millis() - last_led_toggle_ms) >= 500) {
+        last_led_toggle_ms = millis();
+        user_led_on = !user_led_on;
+        digitalWrite(OLIMEX_USER_LED_PIN,
+                     user_led_on ? OLIMEX_USER_LED_ACTIVE_LEVEL : !OLIMEX_USER_LED_ACTIVE_LEVEL);
+    }
 
 #if OLIMEX_DEBUG_SERIAL
     static uint32_t last_print_ms = 0;

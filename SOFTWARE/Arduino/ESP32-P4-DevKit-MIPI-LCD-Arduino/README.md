@@ -1,18 +1,19 @@
 # ESP32-P4-DevKit MIPI-LCD2.8 Arduino demo
 
-Arduino/LVGL demo for the Olimex ESP32-P4-DevKit and the MIPI-LCD2.8-640x480
-V1 (`WLK2802MIPI-15P`) or V2 (`WLK2802MIPI-15P-V2`) display. It configures the
-ST7701 panel for one-lane MIPI DSI, renders an LVGL status screen, and animates
-the progress bar continuously. The background switches between six solid colors
-every 10 seconds, with text and bar colors adjusted for contrast.
+Arduino/LVGL demo for the Olimex ESP32-P4-DevKit or ESP32-P4-PC and the
+MIPI-LCD2.8-640x480 V1 (`WLK2802MIPI-15P`) or V2 (`WLK2802MIPI-15P-V2`)
+display. It configures the ST7701 panel for one-lane MIPI DSI, renders an LVGL
+status screen, and animates the progress bar continuously. The background
+switches between six solid colors every 10 seconds, with text and bar colors
+adjusted for contrast. GPIO2 drives the board user LED as a 1 Hz heartbeat.
 
 The display path is RGB888. LVGL renders RGB565 and the local port converts
 each updated area to RGB888 before it is copied to the MIPI DSI framebuffer.
 
 ## Requirements
 
-- Olimex ESP32-P4-DevKit, with the display connected to its **MIPI-DSI**
-  connector.
+- Olimex ESP32-P4-DevKit or ESP32-P4-PC, with the display connected to its
+  **MIPI-DSI** connector.
 - MIPI-LCD2.8-640x480 V1 or V2 display and its ribbon cable.
 - Arduino IDE with **esp32 by Espressif Systems 3.3.8** installed through
   Boards Manager.
@@ -142,6 +143,19 @@ on the connected display.
 - Touch is not implemented.
 - The display uses one DSI lane at 500 Mbps and a 16 MHz DPI clock, as used by
   the working V2 test.
+
+## User LED heartbeat
+
+GPIO2 drives the user LED with a 500 ms on / 500 ms off heartbeat. This is
+available on both the ESP32-P4-DevKit and ESP32-P4-PC, and gives a quick
+indication that the sketch is still running even when Serial Monitor is closed.
+
+The sketch assumes an active-high LED. If a board revision uses an active-low
+LED, set this near the top of the `.ino` file before compiling:
+
+```cpp
+#define OLIMEX_USER_LED_ACTIVE_LEVEL LOW
+```
 
 ## Project files
 
