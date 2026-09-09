@@ -1,5 +1,0 @@
-## IDF Component Manager Manifest File
-dependencies:
-  espressif/esp_h264:
-    version: "*"
-    override_path: "../../"
